@@ -6,4 +6,7 @@ node_modules
 .output
 .env
 dist
-firebase.*
+
+// Secrets:
+firebase.ts
+serviceAccount.json
