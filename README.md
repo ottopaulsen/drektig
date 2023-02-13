@@ -1,42 +1,30 @@
-# Nuxt 3 Minimal Starter
+# Drektig
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+## Development
 
-## Setup
-
-Make sure to install the dependencies:
-
-```bash
-# yarn
-yarn install
-
-# npm
-npm install
-
-# pnpm
-pnpm install
 ```
-
-## Development Server
-
-Start the development server on http://localhost:3000
-
-```bash
 npm run dev
 ```
 
-## Production
+Preview locally:
 
-Build the application for production:
+```
+node
 
-```bash
+```
+
+[Find icons here](https://icones.js.org/collection/mdi?s=barn)
+
+## Deploy
+
+```
 npm run build
+cd .output/server; npm install; cd ../..
+firebase deploy
 ```
 
-Locally preview production build:
+Deploy only rules:
 
-```bash
-npm run preview
 ```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+firebase deploy --only firestore:rules
+```

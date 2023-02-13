@@ -1,8 +1,24 @@
 <template>
   <div>
     <div class="header">
-      <div class="header-left">
-        <NuxtLink to="/">Drektig</NuxtLink>
+      <div v-if="farmStore.farmCount > 0" class="header-left">
+        <Icon
+          class="home-icon"
+          name="mdi:barn"
+          size="1.6em"
+          @click="$router.push(`${route.fullPath}/edit`)"
+        />
+        <span v-if="farmStore.farmCount === 1">{{ farmStore.farms[0].name }} </span>
+        <span v-if="farmStore.farmCount > 1">
+          <select name="farms" v-model="farmStore.selectedFarmId">
+            <option v-for="farm in farmStore.farms" :value="farm.id">
+              {{ farm.name }}
+            </option>
+          </select>
+        </span>
+      </div>
+      <div v-if="!farmStore.farmCount">
+        <span>Ingen gård tilgjengelig</span>
       </div>
       <div class="header-right">
         <p v-if="authenticated">
@@ -11,15 +27,18 @@
       </div>
     </div>
     <div class="content">
+      <p>{{ farmStore.selectedFarmId }} {{ farmStore.selectedFarm?.name }}</p>
       <p v-if="!authenticated">Autentiserer...</p>
       <NuxtLayout>
-        <NuxtPage />
+        <NuxtPage v-if="farmStore.selectedFarm" />
       </NuxtLayout>
     </div>
   </div>
 </template>
 
 <script setup>
+  const farmStore = useFarmStore();
+
   const user = useCurrentUser();
   console.log({ user: user.value });
   const authenticated = computed(() => {
@@ -77,15 +96,23 @@
     padding: 0px 8px 0px 8px;
   }
 
-  .header-left a {
-    font-size: x-large;
+  .header-left,
+  select {
+    font-size: large;
     text-decoration: none;
     color: black;
     font-weight: 700;
+    border: none;
+    background-color: inherit;
   }
 
   .header-right {
     font-size: small;
+  }
+
+  .home-icon {
+    margin-bottom: 6px;
+    margin-right: 6px;
   }
 </style>
 

@@ -8,6 +8,10 @@
 <script setup lang="ts">
   import { GoogleAuthProvider, getAuth, signInWithPopup } from "firebase/auth";
 
+  definePageMeta({
+    layout: "frontpage",
+  });
+
   const router = useRouter();
   const route = useRoute();
 

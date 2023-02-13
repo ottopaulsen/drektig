@@ -24,7 +24,7 @@
   .button-front {
     width: 100%;
     height: 10vh;
-    font-size: 8vw;
+    font-size: xx-large;
     margin: 8px 0px 0px 0px;
     background-color: rgba(66, 107, 25, 0.474);
   }

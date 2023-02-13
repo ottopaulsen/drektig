@@ -1,10 +1,26 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-export default defineNuxtConfig({
-  css: ["~/assets/text.css"],
-  ssr: false,
-  modules: ["nuxt-icon", "nuxt-vuefire"],
-  runtimeConfig: {},
 
+export default defineNuxtConfig({
+  alias: {
+    pinia: "/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs",
+  },
+  css: ["~/assets/text.css"],
+  imports: {
+    dirs: ["stores"],
+  },
+  modules: [
+    "nuxt-icon",
+    "nuxt-vuefire",
+    [
+      "@pinia/nuxt",
+      {
+        autoImports: ["defineStore", "acceptHMRUpdate"],
+      },
+    ],
+    "@vueuse/nuxt",
+  ],
+  runtimeConfig: {},
+  ssr: false,
   vuefire: {
     config: {
       apiKey: "AIzaSyAP26h6IRqYhd2Fliho8Vsud5YeApDIAHw",
