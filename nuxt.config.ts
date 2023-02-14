@@ -1,5 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
+console.log("This is nuxt.config.ts");
+console.log("API_KEY = " + process.env.API_KEY);
+
 export default defineNuxtConfig({
   alias: {
     pinia: "/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs",
@@ -23,7 +26,7 @@ export default defineNuxtConfig({
   ssr: false,
   vuefire: {
     config: {
-      apiKey: "AIzaSyAP26h6IRqYhd2Fliho8Vsud5YeApDIAHw",
+      apiKey: process.env.API_KEY,
       authDomain: "drektig.firebaseapp.com",
       projectId: "drektig",
       storageBucket: "drektig.appspot.com",

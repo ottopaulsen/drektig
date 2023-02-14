@@ -2,9 +2,10 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     match /{document=**} {
-      allow get: if true; // Read if you know the screen id
-      allow list: if request.auth.email == "ottpau@gmail.com"; // Cannot list all screens
-      allow write: if request.auth.uid == "ottpau@gmail.com";
+      allow get: if request.auth.token.email == "ottpau@gmail.com";
+      allow read: if request.auth.token.email == "ottpau@gmail.com";
+      allow list: if request.auth.token.email == "ottpau@gmail.com";
+      allow write: if request.auth.token.email == "ottpau@gmail.com";
     }
   }
 }
