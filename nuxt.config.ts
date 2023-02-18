@@ -35,7 +35,7 @@ export default defineNuxtConfig({
     appCheck: {
       debug: process.env.NODE_ENV !== "production",
       isTokenAutoRefreshEnabled: true,
-      provider: "ReCaptchaEnterprise",
+      provider: "ReCaptchaV3",
       key: "6LfTkkQkAAAAAMrdwJ-Q5nABnQ26zceBQTpmcbV4",
     },
   },
