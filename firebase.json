@@ -3,7 +3,11 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
-  "functions": { "source": ".output/server", "runtime": "nodejs16" },
+  "functions": {
+    "source": ".output/server",
+    "predeploy": "node ./deploy.js",
+    "runtime": "nodejs18"
+  },
   "hosting": [
     {
       "site": "drektig",

@@ -1,56 +1,29 @@
 <template>
   <div>
-    <div class="header">
-      <div v-if="farmStore.farmCount > 0" class="header-left">
-        <Icon
-          class="home-icon"
-          name="mdi:barn"
-          size="1.6em"
-          @click="$router.push(`${route.fullPath}/edit`)"
-        />
-        <span v-if="farmStore.farmCount === 1">{{ farmStore.farms[0].name }} </span>
-        <span v-if="farmStore.farmCount > 1">
-          <select name="farms" v-model="farmStore.selectedFarmId">
-            <option v-for="farm in farmStore.farms" :value="farm.id">
-              {{ farm.name }}
-            </option>
-          </select>
-        </span>
-      </div>
-      <div v-if="!farmStore.farmCount">
-        <span>Ingen gård tilgjengelig</span>
-      </div>
-      <div class="header-right">
-        <p v-if="authenticated">
-          {{ user.displayName }}
-        </p>
-      </div>
-    </div>
     <div class="content">
-      <p>{{ farmStore.selectedFarmId }} {{ farmStore.selectedFarm?.name }}</p>
-      <p v-if="!authenticated">Autentiserer...</p>
       <NuxtLayout>
-        <NuxtPage v-if="farmStore.selectedFarm" />
+        <NuxtPage />
       </NuxtLayout>
     </div>
   </div>
 </template>
 
 <script setup>
-  const farmStore = useFarmStore();
-
-  const user = useCurrentUser();
-  console.log({ user: user.value });
-  const authenticated = computed(() => {
-    return user.value;
-  });
-
   const router = useRouter();
   const route = useRoute();
 
-  // we don't need this watcher on server
+  useHead({
+    title: "Drektig",
+  });
+
+  const userStore = useUserStore();
+  const user = useCurrentUser();
+
   onMounted(() => {
+    userStore.init();
+
     watch(user, (user, prevUser) => {
+      console.log("watch user changed to ", user);
       if (prevUser && !user) {
         // user logged out
         router.push("/login");
@@ -59,26 +32,6 @@
         router.push(route.query.redirect);
       }
     });
-  });
-
-  onErrorCaptured((err, instance, info) => {
-    console.log("onErrorCaptured err: ", err);
-    console.log("onErrorCaptured info: ", info);
-    console.log("onErrorCaptured instance: ", instance);
-    console.log("onErrorCaptured end");
-  });
-
-  const auth = useFirebaseAuth();
-  if (auth) {
-    auth.onAuthStateChanged(() => {
-      console.log("Auth state changed: ", auth);
-    });
-  } else {
-    console.log("Auth is null");
-  }
-
-  useHead({
-    title: "Drektig",
   });
 </script>
 

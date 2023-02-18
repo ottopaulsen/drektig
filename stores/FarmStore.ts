@@ -16,6 +16,15 @@ export const useFarmStore = defineStore("FarmStore", {
   getters: {
     farmCount: (state) => state.farms.length,
     selectedFarm: (state) => state.farms.find((f) => f.id === state.selectedFarmId),
+    farmName() {
+      return this.selectedFarm?.name;
+    },
+  },
+
+  actions: {
+    setFarm(id: string) {
+      this.selectedFarmId = id;
+    },
   },
 });
 

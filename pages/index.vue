@@ -1,31 +1,49 @@
 <template>
-  <div>
-    <div class="button-panel">
-      <NuxtLink to="individuals"><button class="button-front">Individ</button></NuxtLink>
-      <NuxtLink to="calendar"><button class="button-front">Kalender</button></NuxtLink>
-      <NuxtLink to="today"><button class="button-front">I dag</button></NuxtLink>
-      <NuxtLink to="events/new"><button class="button-front">Ny hendelse</button></NuxtLink>
-    </div>
+  <div class="header">Drektig</div>
+  <div v-if="isAuthenticated" class="loggedIn">
+    <span> Innlogget som {{ name }} </span>
+    <span @click="logOut">Logg ut</span>
   </div>
+  <NuxtLink v-if="!isAuthenticated" to="login">
+    <button class="button-front">Logg inn</button>
+  </NuxtLink>
+  <NuxtLink v-for="farm in farms" :to="`/farm/${farm.id}`">
+    <button class="button-front">{{ farm.name }}</button>
+  </NuxtLink>
 </template>
 
-<script setup lang="ts">
-  definePageMeta({
-    middleware: ["auth"],
-    layout: "frontpage",
-  });
+<script setup>
+  definePageMeta({ layout: "frontpage" });
+
+  const { auth, userName: name, isAuthenticated } = toRefs(useUserStore());
+  const { farms } = toRefs(useFarmStore());
+
+  const logOut = () => {
+    console.log("Logging out");
+    auth.value.signOut();
+  };
 </script>
 
 <style scoped>
-  .button-panel {
-    margin: 12px 0px 12px 0px;
+  .header {
+    align-items: center;
+    background-color: #fafafa;
+    display: flex;
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode",
+      Geneva, Verdana, sans-serif;
+    justify-content: center;
+    font-size: x-large;
+    padding: 8px 8px 8px 8px;
   }
 
-  .button-front {
-    width: 100%;
-    height: 10vh;
-    font-size: xx-large;
-    margin: 8px 0px 0px 0px;
-    background-color: rgba(66, 107, 25, 0.474);
+  .loggedIn {
+    align-items: center;
+    background-color: lightgrey;
+    display: flex;
+    font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode",
+      Geneva, Verdana, sans-serif;
+    justify-content: space-between;
+    font-size: small;
+    padding: 8px 8px 8px 8px;
   }
 </style>

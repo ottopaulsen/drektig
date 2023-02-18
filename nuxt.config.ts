@@ -1,13 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 
-console.log("This is nuxt.config.ts");
-console.log("API_KEY = " + process.env.API_KEY);
-
 export default defineNuxtConfig({
   alias: {
     pinia: "/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs",
   },
-  css: ["~/assets/text.css"],
+  css: ["~/assets/text.css", "~/assets/buttons.css"],
   imports: {
     dirs: ["stores"],
   },
