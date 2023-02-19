@@ -1,27 +1,37 @@
-import { User } from "firebase/auth";
+import type { Router } from "vue-router";
 
-export const useUserStore = defineStore("UserStore", {
-  state: () => {
-    return {
-      auth: useFirebaseAuth(),
-      user: useCurrentUser(),
-    };
-  },
+export const useUserStore = defineStore("UserStore", () => {
+  const auth = useFirebaseAuth();
+  const user = useCurrentUser();
 
-  getters: {
-    email: (state) => state.user?.email,
-    userName: (state) => state.user?.displayName,
-    isAuthenticated: (state) => !!state.user,
-  },
+  const email = computed(() => user.value?.email);
+  const userName = computed(() => user.value?.displayName);
+  const isAuthenticated = computed(() => !!user.value);
 
-  actions: {
-    init() {
-      console.info("Auth init");
-      if (this.auth) {
-        this.auth.onAuthStateChanged((user) => {
-          console.info("Auth state changed: ", user);
-        });
-      }
-    },
-  },
+  function init() {
+    console.info("Auth init");
+    if (auth) {
+      auth.onAuthStateChanged((user) => {
+        console.info("Auth state changed: ", user);
+      });
+    }
+  }
+
+  async function logOut(router: Router) {
+    if (auth) {
+      await auth.signOut().then(() => {
+        console.log("userStore.logOut push /");
+        router.push("/");
+      });
+    }
+  }
+
+  return {
+    auth,
+    email,
+    userName,
+    isAuthenticated,
+    init,
+    logOut,
+  };
 });

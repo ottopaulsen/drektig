@@ -12,26 +12,22 @@
       </select>
     </span>
     <div class="header-right">
-      <select name="userMenu">
-        <option>
-          {{ userName }}
-        </option>
-        <option>Log out</option>
-      </select>
+      <span>
+        {{ userName }}
+      </span>
+      <span class="logout-icon">
+        <Icon class="logout-icon" name="mdi:logout" @click="logOut(router)" />
+      </span>
     </div>
   </div>
 </template>
 
 <script setup>
-  const { auth, userName, isAuthenticated } = toRefs(useUserStore());
+  const { logOut, userName } = toRefs(useUserStore());
   const { farmCount, farmName, farms, selectedFarmId } = toRefs(useFarmStore());
 
-  const logOut = () => {
-    console.log("Logging out");
-    auth.value.signOut();
-  };
-
   const route = useRoute();
+  const router = useRouter();
   const farmRoute = ref("/farm/" + selectedFarmId.value);
 
   const homeTo = computed(() => (route.path === farmRoute.value ? "/" : farmRoute.value));
@@ -59,7 +55,7 @@
     background-color: inherit;
   }
 
-  .header-right > select {
+  .header-right {
     font-size: small;
     font-weight: 400;
   }
@@ -67,5 +63,9 @@
   .home-icon {
     margin-bottom: 6px;
     margin-right: 6px;
+  }
+
+  .logout-icon {
+    margin-left: 2px;
   }
 </style>

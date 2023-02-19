@@ -1,31 +1,34 @@
 import { useFirestore } from "vuefire";
 
 import { useCollection } from "vuefire";
-import { collection, doc, getDoc } from "firebase/firestore";
+import { collection } from "firebase/firestore";
 import { useLocalStorage } from "@vueuse/core";
 
-export const useFarmStore = defineStore("FarmStore", {
-  state: () => {
-    const db = useFirestore();
-    return {
-      farms: useCollection(collection(db, "farms").withConverter(null)),
-      selectedFarmId: useLocalStorage("Drektig:selectedFarmId", ""),
-    };
-  },
+export const useFarmStore = defineStore("FarmStore", () => {
+  const db = useFirestore();
 
-  getters: {
-    farmCount: (state) => state.farms.length,
-    selectedFarm: (state) => state.farms.find((f) => f.id === state.selectedFarmId),
-    farmName() {
-      return this.selectedFarm?.name;
-    },
-  },
+  const { isAuthenticated } = toRefs(useUserStore());
+  const farmSource = computed(() => (isAuthenticated.value ? collection(db, "farms") : null));
+  const farms = ref<Farm[] | null>(null);
+  useCollection(farmSource, { target: farms });
 
-  actions: {
-    setFarm(id: string) {
-      this.selectedFarmId = id;
-    },
-  },
+  const selectedFarmId = useLocalStorage("Drektig:selectedFarmId", "");
+
+  const farmCount = computed(() => farms.value?.length || 0);
+  const selectedFarm = computed(() => farms.value?.find((f) => f.id === selectedFarmId.value));
+  const farmName = computed(() => selectedFarm.value?.name);
+
+  function setFarm(id: string) {
+    selectedFarmId.value = id;
+  }
+
+  return {
+    farms,
+    selectedFarmId,
+    farmCount,
+    farmName,
+    setFarm,
+  };
 });
 
 if (import.meta.hot) {

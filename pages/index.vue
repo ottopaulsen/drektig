@@ -1,9 +1,10 @@
 <template>
-  <div class="header">Drektig</div>
-  <div v-if="isAuthenticated" class="loggedIn">
-    <span> Innlogget som {{ name }} </span>
-    <span @click="logOut">Logg ut</span>
+  <div class="image-container">
+    <img src="/ku.jpg" width="250" />
   </div>
+  <NuxtLink to="/about">
+    <button class="button-front">Om Drektig</button>
+  </NuxtLink>
   <NuxtLink v-if="!isAuthenticated" to="login">
     <button class="button-front">Logg inn</button>
   </NuxtLink>
@@ -13,15 +14,10 @@
 </template>
 
 <script setup>
-  definePageMeta({ layout: "frontpage" });
+  definePageMeta({ layout: "infopage" });
 
-  const { auth, userName: name, isAuthenticated } = toRefs(useUserStore());
+  const { isAuthenticated } = toRefs(useUserStore());
   const { farms } = toRefs(useFarmStore());
-
-  const logOut = () => {
-    console.log("Logging out");
-    auth.value.signOut();
-  };
 </script>
 
 <style scoped>
@@ -45,5 +41,11 @@
     justify-content: space-between;
     font-size: small;
     padding: 8px 8px 8px 8px;
+  }
+
+  .image-container {
+    display: flex;
+    justify-content: center;
+    margin: 24px 0px 12px 0px;
   }
 </style>

@@ -11,7 +11,7 @@
   console.log("login setup");
 
   definePageMeta({
-    layout: "frontpage",
+    layout: "noheader",
   });
 
   const auth = useFirebaseAuth();
@@ -21,7 +21,10 @@
 
   const signIn = () => {
     if (auth) {
-      signInWithPopup(auth, new GoogleAuthProvider());
+      signInWithPopup(auth, new GoogleAuthProvider()).then(() => {
+        console.log({ route, router });
+        router.push(route.query.redirect ?? "/");
+      });
     }
   };
 </script>
