@@ -6,7 +6,7 @@
     <div class="col">
       <input
         :id="props.id && props.label"
-        type="text"
+        type="props.type"
         :value="modelValue"
         @input="$emit('update:modelValue', $event.target.value)"
       />
@@ -15,7 +15,7 @@
 </template>
 
 <script setup>
-  const props = defineProps(["id", "label", "modelValue"]);
+  const props = defineProps(["id", "label", "modelValue", "type"]);
   defineEmits(["update:modelValue"]);
 </script>
 

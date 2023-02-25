@@ -16,18 +16,15 @@
 <script lang="ts" setup>
   import { collection, doc } from "firebase/firestore";
 
+  const { getIndividual } = useFarmStore();
+
   definePageMeta({
     middleware: ["auth"],
   });
 
   const route = useRoute();
-
-  const db = useFirestore();
-
   const id = computed(() => route.params.id);
-
-  const individualSource = computed(() => doc(collection(db, "individuals"), id.value));
-  const individual = useDocument(individualSource);
+  const individual = getIndividual(id.value);
 
   const title = computed(() => individual.value?.number + " " + individual.value?.name);
 

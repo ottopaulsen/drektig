@@ -12,7 +12,7 @@
     <NuxtLink
       v-for="individual in individuals"
       :key="individual.id"
-      :to="'individuals/' + individual.id"
+      :to="route.path + '/' + individual.id"
     >
       <div class="individual-container">
         <div class="individual-box">
@@ -25,16 +25,12 @@
 </template>
 
 <script setup>
-  import { useFirestore } from "vuefire";
-  import { useCollection } from "vuefire";
-  import { collection } from "firebase/firestore";
-
   definePageMeta({
     middleware: ["auth"],
   });
 
-  const db = useFirestore();
-  const individuals = useCollection(collection(db, "individuals"));
+  const { individuals } = toRefs(useFarmStore());
+
   const route = useRoute();
 </script>
 
