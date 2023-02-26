@@ -45,7 +45,10 @@ export const useFarmStore = defineStore("FarmStore", () => {
   }
 
   function saveIndividual(individual: Individual) {
-    console.log(`Saving ${individual.number} ${individual.name} with id ${individual.id}`);
+    console.log(
+      `Saving ${individual.number} ${individual.name} with id ${individual.id}`,
+      individual
+    );
     const ref = doc(db, "farms", selectedFarmId.value, "individuals", individual.id);
     updateDoc(ref, individual);
   }

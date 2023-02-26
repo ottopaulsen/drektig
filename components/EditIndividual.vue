@@ -3,8 +3,10 @@
     <h1 v-if="isNew">Nytt individ</h1>
     <h1 v-if="!isNew">Rediger individ</h1>
     <section>
-      <EditInputNumber label="Nummer" id="number" v-model="individual.number" type="number" />
-      <EditInputNumber label="Navn" id="name" v-model="individual.name" type="text" />
+      <EditInputText label="Nummer" id="number" v-model="individual.number" type="number" />
+      <EditInputText label="Navn" id="name" v-model="individual.name" type="text" />
+      <EditInputDate label="Født" id="born" v-model="individual.born" type="text" />
+      <EditInputCheck label="Skal slaktes" id="toBeTakenOut" v-model="individual.toBeTakenOut" />
     </section>
     <div class="action-button-row">
       <button class="action-button" @click="goOneStepUp">Tilbake</button>
@@ -14,10 +16,10 @@
 </template>
 
 <script setup lang="ts">
-  const props = defineProps({ id: null });
   const { addIndividual, getIndividualSnapshot, saveIndividual } = useFarmStore();
   const router = useRouter();
   const route = useRoute();
+  const props = defineProps({ id: null });
 
   const isNew = computed(() => !props.id);
 
@@ -25,6 +27,8 @@
     number: null,
     name: null,
     id: null,
+    born: null,
+    toBeTakenOut: false,
   });
 
   async function save() {
@@ -32,6 +36,8 @@
       addIndividual(individual);
       individual.name = null;
       individual.number = null;
+      individual.born = null;
+      individual.toBeTakenOut = false;
     } else {
       saveIndividual(individual);
     }
@@ -39,7 +45,6 @@
 
   onMounted(() => {
     getIndividualSnapshot(route.params.id).then((ind) => {
-      console.log("Git ind: ", ind.data());
       Object.assign(individual, ind.data());
       individual.id = ind.id;
     });
