@@ -1,12 +1,21 @@
 import type { Router } from "vue-router";
+import { useIsCurrentUserLoaded } from "vuefire";
 
 export const useUserStore = defineStore("UserStore", () => {
   const auth = useFirebaseAuth();
   const user = useCurrentUser();
+  const isUserLoaded = useIsCurrentUserLoaded();
 
   const email = computed(() => user.value?.email);
   const userName = computed(() => user.value?.displayName);
-  const isAuthenticated = computed(() => !!user.value);
+  const isAuthenticated = computed(() => {
+    console.log("isUserLoaded.value = " + isUserLoaded.value);
+    console.log("user.value = ", user.value);
+    console.log("user.value.email = ", user.value?.email);
+    const res = isUserLoaded.value && !!user.value?.email;
+    console.log("isAuthenticated returns " + res);
+    return res;
+  });
 
   function init() {
     console.info("Auth init");

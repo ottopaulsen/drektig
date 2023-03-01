@@ -1,9 +1,15 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    match /users/{userId}/{document=**} {
+      allow read: if request.auth != null && userId == request.auth.token.email;
+      allow write: if request.auth != null && request.auth.token.email == "ottpau@gmail.com";
+    }
     match /farms/{farmId}/{document=**} {
-      allow read: if request.auth != null && exists(/databases/$(database)/documents/farms/$(farmId)/users/$(request.auth.token.email));
-      allow write: if request.auth != null && get(/databases/$(database)/documents/farms/$(farmId)/users/$(request.auth.token.email)).data.write == true;
+      allow read: if true;
+      //allow read: if request.auth != null && exists(/databases/$(database)/documents/users/$(request.auth.token.email)/farms/$(farmId)) && farmId == resource.id;
+      //allow read: if request.auth != null && exists(/databases/$(database)/documents/users/$(request.auth.token.email)/farms/$(farmId));
+      allow write: if request.auth != null && exists(/databases/$(database)/documents/users/$(request.auth.token.email)/farms/$(farmId));
     }
   }
 }

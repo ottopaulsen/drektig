@@ -5,3 +5,5 @@ type Individual = {
   born: Timestamp | null;
   toBeTakenOut: boolean;
 };
+
+export type { Individual };
