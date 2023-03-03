@@ -2,6 +2,7 @@ import { useFirestore } from "vuefire";
 
 import { useCollection } from "vuefire";
 import {
+  addDoc,
   setDoc,
   collection,
   doc,
@@ -89,7 +90,9 @@ export const useFarmStore = defineStore("FarmStore", () => {
   }
 
   function getIndividual(id: string) {
-    const ref = computed(() => doc(db, "farms", farmId.value, "individuals", id));
+    const ref = computed(() =>
+      usedIds.value.includes(id) ? doc(db, "farms", farmId.value, "individuals", id) : null
+    );
     return useDocument(ref);
   }
 
@@ -98,8 +101,14 @@ export const useFarmStore = defineStore("FarmStore", () => {
     return await getDoc(ref);
   }
 
+  function addEvent(event: IndividualEvent) {
+    const colRef = collection(db, "farms", farmId.value, "events");
+    addDoc(colRef, event);
+  }
+
   return {
     accessibleFarms,
+    addEvent,
     farmCount,
     farmName,
     farms,

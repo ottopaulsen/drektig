@@ -1,6 +1,10 @@
 <template>
   <div>
-    <h1>About Drektig</h1>
+    <h1>Om Drektig</h1>
+    <p>
+      Følg dyrenes syklus og hold rede på brunst, inseminering, drektighet, kalving og andre
+      hendelser.
+    </p>
   </div>
 </template>
 

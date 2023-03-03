@@ -10,14 +10,14 @@
       </NuxtLink>
     </div>
     <div v-if="legalEventType">
-      <h2>
+      <h3>
         Registrer hendelse:
         {{
           "" +
           selectedEventType?.label +
           (legalIndividual ? " på " + individual?.number + " " + individual?.name : null)
         }}
-      </h2>
+      </h3>
       <div>
         <div>
           <span>Registrer hendelse: {{ selectedEventType?.label }}</span>
@@ -27,7 +27,7 @@
             </NuxtLink>
           </span>
         </div>
-        <div>
+        <div v-if="legalIndividual">
           <span>Individ: {{ individual?.number + " " + individual?.name }}</span>
           <span>
             <NuxtLink :to="{ query: { ...route.query, individual: null } }">
@@ -40,7 +40,7 @@
         <p>Velg individ:</p>
 
         <NuxtLink
-          v-for="individual in individuals"
+          v-for="individual in farmStore.individuals"
           :key="individual.id"
           :to="{ query: { ...route.query, individual: individual.id } }"
         >
@@ -52,15 +52,23 @@
           den mest sannsynlige rekkefølgen
         </p>
       </div>
+      <div v-if="legalIndividual && legalEventType">
+        <p>Oppgi dato:</p>
+        <EditInputDate label="Dato" id="event-date" v-model="date" />
+        <button class="action-button" @click="save">Lagre</button>
+      </div>
     </div>
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
+  import { Timestamp } from "firebase/firestore";
+  import { useFarmStore } from "../../../../stores/FarmStore";
   const eventTypes = [
     { eventType: "heat", label: "Brunst" },
     { eventType: "inseminated", label: "Inseminert" },
     { eventType: "pregnant", label: "Drektig" },
+    { eventType: "dryOff", label: "Sining" },
     { eventType: "birth", label: "Kalving" },
   ];
   const route = useRoute();
@@ -70,13 +78,28 @@
   );
   const selectedEventType = computed(() => eventTypes.find((t) => t.eventType === eventType.value));
 
-  const { individuals } = toRefs(useFarmStore());
+  const farmStore = useFarmStore();
 
   const individualId = computed(() => route.query.individual);
 
-  const { getIndividual } = useFarmStore();
-  const individual = getIndividual(individualId.value);
-  const legalIndividual = computed(() => !!individual.value?.id);
+  const individual = computed(() =>
+    legalIndividual ? farmStore.individuals.find((i) => i.id === individualId.value) : null
+  );
+
+  const legalIndividual = computed(
+    () => individualId.value && farmStore.individuals.map((i) => i.id).includes(individualId.value)
+  );
+
+  const date = Timestamp.now();
+
+  async function save() {
+    const event = {
+      eventType: eventType.value,
+      individual: individualId.value,
+      date,
+    };
+    farmStore.addEvent(event);
+  }
 </script>
 
 <style scoped>
