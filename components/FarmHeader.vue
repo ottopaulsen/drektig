@@ -5,7 +5,7 @@
     </NuxtLink>
     <span v-if="farmCount === 1">{{ farmName }} </span>
     <span v-if="farmCount > 1">
-      <select name="farms" v-model="selectedFarmId">
+      <select name="farms" :value="farmId" @input="changeFarm">
         <option v-for="farm in farms" :value="farm.id">
           {{ farm.name }}
         </option>
@@ -24,14 +24,18 @@
 
 <script setup>
   const { logOut, userName } = toRefs(useUserStore());
-  const { farmCount, farmName, farms, selectedFarmId } = toRefs(useFarmStore());
+  const { farmCount, farmId, farmName, farms } = toRefs(useFarmStore());
 
   const route = useRoute();
   const router = useRouter();
-  const farmRoute = ref("/farm/" + selectedFarmId.value);
+  const farmRoute = computed(() => "/farm/" + farmId.value);
 
   const homeTo = computed(() => (route.path === farmRoute.value ? "/" : farmRoute.value));
   const homeIcon = computed(() => (homeTo.value === "/" ? "mdi:home" : "mdi:barn"));
+
+  function changeFarm(e) {
+    router.push({ params: { farmId: e.target.value } });
+  }
 </script>
 
 <style scoped>

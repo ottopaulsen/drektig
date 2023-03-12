@@ -24,7 +24,7 @@
     middleware: ["auth"],
   });
 
-  const { individuals } = toRefs(useFarmStore());
+  const { individuals } = toRefs(useIndividualStore());
 
   const route = useRoute();
 </script>

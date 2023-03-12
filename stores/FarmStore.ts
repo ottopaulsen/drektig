@@ -1,125 +1,88 @@
 import { useFirestore } from "vuefire";
 
-import { useCollection } from "vuefire";
-import {
-  addDoc,
-  setDoc,
-  collection,
-  doc,
-  getDoc,
-  updateDoc,
-  query,
-  where,
-  documentId,
-} from "firebase/firestore";
-import { useLocalStorage } from "@vueuse/core";
-
-import type { Individual } from "@/types/Individual";
+import { collection, query, where, documentId, onSnapshot } from "firebase/firestore";
 
 export const useFarmStore = defineStore("FarmStore", () => {
   const db = useFirestore();
+  const farmsLoaded = ref(false);
+
+  const accessibleFarms = ref<string[]>([]);
+  const farms = ref<Farm[]>([]);
+  const farmCount = computed(() => farms.value.length);
+
+  let unsubscribeAccessibleFarms = () => {};
+  let unsubscribeFarms = () => {};
+  async function loadFarms() {
+    if (farmsLoaded.value) {
+      return;
+    }
+    await getCurrentUser();
+    const { data } = await useAsyncData("farms", () => {
+      return new Promise((resolve, reject) => {
+        const accessibleFarmsRef = collection(db, "users", userStore.email, "farms");
+        unsubscribeAccessibleFarms = onSnapshot(accessibleFarmsRef, (snapshot) => {
+          snapshot.forEach((doc) => {
+            accessibleFarms.value.push(doc.id);
+          });
+          const farmsQuery = query(
+            collection(db, "farms"),
+            where(documentId(), "in", accessibleFarms.value)
+          );
+          unsubscribeFarms = onSnapshot(farmsQuery, (snapshot) => {
+            farms.value = [];
+            snapshot.forEach((doc) => {
+              farms.value.push({ ...doc.data(), id: doc.id } as Farm);
+            });
+            farmsLoaded.value = true;
+            resolve(farmCount.value);
+          });
+        });
+      });
+    });
+    return data;
+  }
+
+  function unloadFarms() {
+    unsubscribeAccessibleFarms();
+    unsubscribeFarms();
+    farmsLoaded.value = false;
+    accessibleFarms.value = [];
+    farms.value = [];
+  }
 
   const userStore = useUserStore();
 
-  // Farms
-  const accessibleFarmsRef = computed(() =>
-    userStore.isAuthenticated ? collection(db, "users", userStore.email, "farms") : null
+  watch(
+    () => userStore.email,
+    () => {
+      unloadFarms();
+    }
   );
-  const accessibleFarms = useCollection(accessibleFarmsRef);
-  const accessibleFarmsArr = computed(() => accessibleFarms.value.map((v) => v.id));
-
-  const farmsRef = computed(() => collection(db, "farms"));
-  const farmsQuery = computed(() =>
-    accessibleFarmsArr.value.length
-      ? query(collection(db, "farms"), where(documentId(), "in", accessibleFarmsArr.value))
-      : null
-  );
-  const farms = useCollection(farmsQuery);
-
-  const farmCount = computed(() => farms.value?.length || 0);
 
   // Selected farm
-  const selectedFarmId = useLocalStorage("Drektig:selectedFarmId", "");
-  const farmId = computed(() =>
-    accessibleFarmsArr.value.includes(selectedFarmId.value) ? selectedFarmId.value : ""
-  );
-  const selectedFarmRef = computed(() => {
-    console.log("farmId.value = " + farmId.value);
-    return farmId.value && userStore.isAuthenticated ? doc(db, "farms", farmId.value) : null;
-  });
-  const selectedFarm = useDocument(selectedFarmRef);
-
+  const farmId = ref("");
+  const selectedFarm = computed(() => farms.value.find((f) => f.id === farmId.value));
   const farmName = computed(() => selectedFarm.value?.name);
 
-  function setFarm(id: string) {
-    console.log("setFarm " + id);
-    selectedFarmId.value = id;
-    console.log("setFarm after");
-  }
-
-  // Individuals
-  const individualsRef = computed(() =>
-    userStore.isAuthenticated && farmId.value
-      ? collection(db, "farms", farmId.value, "individuals")
-      : null
+  const route = useRoute();
+  watch(
+    () => route.params.farmId,
+    () => {
+      console.log("route.params.farm = " + route.params.farmId);
+      if (typeof route.params.farmId === "string") {
+        farmId.value = route.params.farmId;
+      }
+    },
+    { immediate: true }
   );
-  const individuals = useCollection(individualsRef);
-
-  const usedIds = computed(() => individuals.value.map((i) => i.id));
-
-  function addIndividual(individual: Individual) {
-    console.log(`Saving ${individual.number} ${individual.name}`);
-    console.log("usedIds = ", usedIds.value);
-    let id = "" + individual.number;
-    let counter = 2;
-    while (usedIds.value.includes(id)) {
-      id = `${individual.number}-${counter}`;
-      counter++;
-    }
-    const docRef = doc(db, "farms", farmId.value, "individuals", id);
-    setDoc(docRef, individual);
-  }
-
-  function saveIndividual(individual: Individual) {
-    console.log(
-      `Saving ${individual.number} ${individual.name} with id ${individual.id}`,
-      individual
-    );
-    const ref = doc(db, "farms", farmId.value, "individuals", individual.id);
-    updateDoc(ref, individual);
-  }
-
-  function getIndividual(id: string) {
-    const ref = computed(() =>
-      usedIds.value.includes(id) ? doc(db, "farms", farmId.value, "individuals", id) : null
-    );
-    return useDocument(ref);
-  }
-
-  async function getIndividualSnapshot(id: string) {
-    const ref = doc(db, "farms", farmId.value, "individuals", id);
-    return await getDoc(ref);
-  }
-
-  function addEvent(event: IndividualEvent) {
-    const colRef = collection(db, "farms", farmId.value, "events");
-    addDoc(colRef, event);
-  }
 
   return {
     accessibleFarms,
-    addEvent,
     farmCount,
     farmName,
     farms,
-    farmsRef,
-    getIndividual,
-    getIndividualSnapshot,
-    individuals,
-    selectedFarmId,
-    addIndividual,
-    saveIndividual,
-    setFarm,
+    farmId,
+    loadFarms,
   };
 });
 

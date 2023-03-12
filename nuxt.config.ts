@@ -4,7 +4,16 @@ export default defineNuxtConfig({
   alias: {
     pinia: "/node_modules/@pinia/nuxt/node_modules/pinia/dist/pinia.mjs",
   },
-  css: ["~/assets/text.css", "~/assets/buttons.css"],
+  build: {
+    transpile: ["primevue"],
+  },
+  css: [
+    "~/assets/text.css",
+    "~/assets/buttons.css",
+    "primevue/resources/themes/saga-blue/theme.css",
+    "primevue/resources/primevue.css",
+    "primeicons/primeicons.css",
+  ],
   imports: {
     dirs: ["stores"],
   },

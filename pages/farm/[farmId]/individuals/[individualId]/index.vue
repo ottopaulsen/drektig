@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div v-if="found" class="title">
+    <div class="title">
       <div>
-        <h1>{{ individual?.number }} {{ individual?.name }}</h1>
+        <h1>{{ title }}</h1>
       </div>
       <div>
         <Icon
@@ -22,28 +22,40 @@
           (Math.round(age.months) ? " og " + Math.round(age.months) + " måneder" : "")
         }}
       </p>
-      <p v-if="individual?.toBeTakenOut">Skal slaktes!</p>
+      <p v-if="individualStore.selectedIndividual?.toBeTakenOut">Skal slaktes!</p>
+    </div>
+    <div v-for="event in eventsOfSelectedIndividual">
+      <ListEventItem :event="event" />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+  //@ts-ignore
   import { DateTime } from "luxon";
-  const { getIndividual } = useFarmStore();
+  const individualStore = useIndividualStore();
+
+  const eventStore = useEventStore();
+
+  const { eventsOfSelectedIndividual } = toRefs(eventStore);
 
   definePageMeta({
     middleware: ["auth"],
   });
 
   const route = useRoute();
-  const id = computed(() => route.params.id);
-  const individual = getIndividual(id.value);
-  const found = computed(() => individual.value && individual.value.id === id.value);
 
-  const title = computed(() => individual.value?.number + " " + individual.value?.name);
-  const bornDate = computed(() => DateTime.fromJSDate(individual.value?.born?.toDate()));
+  const title = computed(
+    () =>
+      individualStore.selectedIndividual?.number + " " + individualStore.selectedIndividual?.name
+  );
+  const bornDate = computed(() =>
+    DateTime.fromJSDate(individualStore.selectedIndividual?.born?.toDate())
+  );
   const age = computed(() =>
-    individual.value?.born ? DateTime.now().diff(bornDate.value, ["years", "months"]) : undefined
+    individualStore.selectedIndividual?.born
+      ? DateTime.now().diff(bornDate.value, ["years", "months"])
+      : undefined
   );
 
   useHead({

@@ -16,7 +16,8 @@
 </template>
 
 <script setup lang="ts">
-  const { addIndividual, getIndividualSnapshot, saveIndividual } = useFarmStore();
+  import type { Individual } from "../types/Individual";
+  const { addIndividual, getIndividualSnapshot, saveIndividual } = useIndividualStore();
   const router = useRouter();
   const route = useRoute();
   const props = defineProps({ id: null });
@@ -44,7 +45,7 @@
   }
 
   onMounted(() => {
-    getIndividualSnapshot(route.params.id).then((ind) => {
+    getIndividualSnapshot(route.params.individualId).then((ind) => {
       Object.assign(individual, ind.data());
       individual.id = ind.id;
     });
