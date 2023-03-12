@@ -1,6 +1,6 @@
 type IndividualEvent = {
   id: string;
   eventType: string;
-  individual: number;
+  individual: string;
   date: Timestamp;
 };

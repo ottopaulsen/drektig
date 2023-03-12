@@ -1,6 +1,11 @@
 <template>
   <div>
-    <h1>I dag</h1>
+    <div>
+      <h1>I dag</h1>
+    </div>
+    <div v-for="event in eventStore.eventsOfAllIndividuals">
+      <ListEventItem :event="event" :showIndividual="true" />
+    </div>
   </div>
 </template>
 
@@ -8,4 +13,6 @@
   definePageMeta({
     middleware: ["auth"],
   });
+
+  const eventStore = useEventStore();
 </script>

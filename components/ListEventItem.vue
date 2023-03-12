@@ -3,6 +3,7 @@
     <div class="list-box">
       <div>
         <span>{{ date }}</span>
+        <span v-if="props.showIndividual">{{ individualText }}</span>
         <span>{{ label }}</span>
       </div>
       <div>
@@ -14,15 +15,18 @@
 
 <script lang="ts" setup>
   import { DateTime } from "luxon";
-  import { useEventStore } from "../stores/EventStore";
 
   const eventStore = useEventStore();
-  const { eventTypes } = toRefs(eventStore);
+  const individualStore = useIndividualStore();
 
-  const props = defineProps<{ event: IndividualEvent }>();
+  const props = defineProps<{ event: IndividualEvent; showIndividual: Boolean }>();
+  const individual = computed(() =>
+    individualStore.individuals.find((i) => i.id === props.event.individual)
+  );
+  const individualText = computed(() => `${individual.value?.number} ${individual.value?.name}`);
 
   const label = computed(
-    () => eventTypes.value.find((t) => t.eventType == props.event.eventType).label
+    () => eventStore.eventTypes.find((t) => t.eventType == props.event.eventType)?.label
   );
 
   const date = computed(() => DateTime.fromJSDate(props.event.date.toDate()).toISODate());

@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  collectionGroup,
   deleteDoc,
   doc,
   query,
@@ -50,11 +51,11 @@ export const useEventStore = defineStore("EventStore", () => {
   }
 
   const eventsOfSelectedIndividual = ref<IndividualEvent[]>([]);
-  let unsubscribe = () => {};
+  let unsubscribeOne = () => {};
   watch(
     () => individualStore.selectedIndividual,
     () => {
-      unsubscribe();
+      unsubscribeOne();
       eventsOfSelectedIndividual.value.splice(0);
       if (individualStore.selectedIndividualIsLegal) {
         const q = query(
@@ -62,9 +63,33 @@ export const useEventStore = defineStore("EventStore", () => {
           where("individual", "==", individualStore.selectedIndividual?.id),
           orderBy("date", "desc")
         );
-        unsubscribe = onSnapshot(q, (querySnapshot) => {
-          querySnapshot.forEach((doc) => {
+        unsubscribeOne = onSnapshot(q, (snapshot) => {
+          eventsOfSelectedIndividual.value.splice(0);
+          snapshot.forEach((doc) => {
             eventsOfSelectedIndividual.value.push({ ...doc.data(), id: doc.id } as IndividualEvent);
+          });
+        });
+      }
+    },
+    { immediate: true }
+  );
+
+  const eventsOfAllIndividuals = ref<IndividualEvent[]>([]);
+  let unsubscribeAll = () => {};
+  watch(
+    () => farmStore.farmId,
+    () => {
+      unsubscribeAll();
+      eventsOfAllIndividuals.value.splice(0);
+      if (farmStore.farmId) {
+        const q = query(
+          collection(db, "farms", farmStore.farmId, "events"),
+          orderBy("date", "desc")
+        );
+        unsubscribeAll = onSnapshot(q, (snapshot) => {
+          eventsOfAllIndividuals.value.splice(0);
+          snapshot.forEach((doc) => {
+            eventsOfAllIndividuals.value.push({ ...doc.data(), id: doc.id } as IndividualEvent);
           });
         });
       }
@@ -77,6 +102,7 @@ export const useEventStore = defineStore("EventStore", () => {
     deleteEvent,
     eventNames,
     eventsOfSelectedIndividual,
+    eventsOfAllIndividuals,
     eventTypes,
     selectedEventType,
   };
