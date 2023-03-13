@@ -1,7 +1,6 @@
 import {
   addDoc,
   collection,
-  collectionGroup,
   deleteDoc,
   doc,
   query,
@@ -11,6 +10,8 @@ import {
 } from "firebase/firestore";
 import { useIndividualStore } from "./IndividualStore";
 import type { EventType } from "../types/EventType";
+
+const { daysFromToday } = useTimeUtils();
 
 export const useEventStore = defineStore("EventStore", () => {
   const db = useFirestore();
@@ -74,6 +75,8 @@ export const useEventStore = defineStore("EventStore", () => {
     { immediate: true }
   );
 
+  const filterDays = ref(3);
+
   const eventsOfAllIndividuals = ref<IndividualEvent[]>([]);
   let unsubscribeAll = () => {};
   watch(
@@ -84,6 +87,7 @@ export const useEventStore = defineStore("EventStore", () => {
       if (farmStore.farmId) {
         const q = query(
           collection(db, "farms", farmStore.farmId, "events"),
+          where("date", ">=", new Date("2023-03-10")),
           orderBy("date", "desc")
         );
         unsubscribeAll = onSnapshot(q, (snapshot) => {
@@ -104,6 +108,7 @@ export const useEventStore = defineStore("EventStore", () => {
     eventsOfSelectedIndividual,
     eventsOfAllIndividuals,
     eventTypes,
+    filterDays,
     selectedEventType,
   };
 });

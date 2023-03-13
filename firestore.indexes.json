@@ -1,4 +1,14 @@
 {
-  "indexes": [],
-  "fieldOverrides": []
+  "fieldOverrides": [],
+  "indexes": [
+    {
+      "collectionId": "events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "individual", "order": "ASCENDING" },
+        { "fieldPath": "date", "order": "DESCENDING" },
+        { "fieldPath": "__name__", "order": "DESCENDING" }
+      ]
+    }
+  ]
 }
