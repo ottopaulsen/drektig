@@ -16,9 +16,10 @@
 </template>
 
 <script setup>
+  import { storeToRefs } from "pinia";
   definePageMeta({
     middleware: ["auth"],
   });
 
-  const { farmId } = toRefs(useFarmStore());
+  const { farmId } = storeToRefs(useFarmStore());
 </script>

@@ -8,7 +8,6 @@ import {
   orderBy,
   onSnapshot,
 } from "firebase/firestore";
-import { useIndividualStore } from "./IndividualStore";
 import type { EventType } from "../types/EventType";
 
 const { daysFromToday } = useTimeUtils();
@@ -77,6 +76,7 @@ export const useEventStore = defineStore("EventStore", () => {
 
   const filterDays = ref(3);
 
+  // TODO: Remove this and use only lastEvents with paging.
   const eventsOfAllIndividuals = ref<IndividualEvent[]>([]);
   let unsubscribeAll = () => {};
   watch(
@@ -87,7 +87,7 @@ export const useEventStore = defineStore("EventStore", () => {
       if (farmStore.farmId) {
         const q = query(
           collection(db, "farms", farmStore.farmId, "events"),
-          where("date", ">=", new Date("2023-03-10")),
+          where("date", ">=", daysFromToday(-filterDays.value)),
           orderBy("date", "desc")
         );
         unsubscribeAll = onSnapshot(q, (snapshot) => {
@@ -101,6 +101,61 @@ export const useEventStore = defineStore("EventStore", () => {
     { immediate: true }
   );
 
+  const lastEvents = ref<IndividualEvent[]>([]);
+  let unsubscribeLast = () => {};
+  watch(
+    () => farmStore.farmId,
+    () => {
+      unsubscribeLast();
+      lastEvents.value.splice(0);
+      if (farmStore.farmId) {
+        const q = query(
+          collection(db, "farms", farmStore.farmId, "events"),
+          orderBy("date", "desc"),
+          orderBy("individual"),
+          orderBy("eventType"),
+          where("date", ">=", daysFromToday(-360))
+        );
+        const eventMap = new Map();
+        unsubscribeLast = onSnapshot(q, (snapshot) => {
+          lastEvents.value.splice(0);
+          eventMap.clear();
+          snapshot.forEach((doc) => {
+            const { individual, eventType } = doc.data();
+            const key = `${individual}_${eventType}`;
+            if (!eventMap.has(key)) {
+              eventMap.set(key, doc);
+            }
+            lastEvents.value.splice(0);
+            eventMap.forEach((doc) => {
+              lastEvents.value.push({ ...doc.data(), id: doc.id } as IndividualEvent);
+            });
+          });
+        });
+      }
+    },
+    { immediate: true }
+  );
+
+  // const individualEvents = ref<{ [index: string]: { [index: string]: Timestamp } }>({});
+  // individualStore.usedIds.forEach((id) => {
+  //   individualEvents.value[id] = {};
+  // });
+  // lastEvents.value.forEach((event) => {
+  //   individualEvents.value[event.individual][event.eventType] = event.date;
+  // });
+
+  const individualEvents = computed(() => {
+    const res = {} as { [index: string]: { [index: string]: Date } };
+    individualStore.usedIds.forEach((id) => {
+      res[id] = {};
+    });
+    lastEvents.value.forEach((event) => {
+      res[event.individual][event.eventType] = event.date.toDate();
+    });
+    return res;
+  });
+
   return {
     addEvent,
     deleteEvent,
@@ -109,6 +164,8 @@ export const useEventStore = defineStore("EventStore", () => {
     eventsOfAllIndividuals,
     eventTypes,
     filterDays,
+    individualEvents,
+    lastEvents,
     selectedEventType,
   };
 });

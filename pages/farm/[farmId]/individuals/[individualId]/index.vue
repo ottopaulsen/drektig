@@ -24,7 +24,7 @@
       </p>
       <p v-if="individualStore.selectedIndividual?.toBeTakenOut">Skal slaktes!</p>
     </div>
-    <div v-for="event in eventsOfSelectedIndividual">
+    <div v-for="event in eventStore.eventsOfSelectedIndividual">
       <ListEventItem :event="event" />
     </div>
   </div>
@@ -36,8 +36,6 @@
   const individualStore = useIndividualStore();
 
   const eventStore = useEventStore();
-
-  const { eventsOfSelectedIndividual } = toRefs(eventStore);
 
   definePageMeta({
     middleware: ["auth"],

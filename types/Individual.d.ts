@@ -1,4 +1,12 @@
 type Individual = {
+  id: string;
+  number: number;
+  name: string;
+  born: Timestamp | null;
+  toBeTakenOut: boolean;
+};
+
+type IndividualNew = {
   id: string | null;
   number: number | null;
   name: string | null;
@@ -6,4 +14,4 @@ type Individual = {
   toBeTakenOut: boolean;
 };
 
-export type { Individual };
+export type { Individual, IndividualNew };

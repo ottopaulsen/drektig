@@ -16,10 +16,11 @@
 </template>
 
 <script setup>
+  import { storeToRefs } from "pinia";
   definePageMeta({ layout: "infopage" });
 
-  const { isAuthenticated } = toRefs(useUserStore());
-  const { farms } = toRefs(useFarmStore());
+  const { isAuthenticated } = storeToRefs(useUserStore());
+  const { farms } = storeToRefs(useFarmStore());
 </script>
 
 <style scoped>

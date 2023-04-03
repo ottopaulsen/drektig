@@ -20,7 +20,8 @@
 </template>
 
 <script setup>
-  const { logOut, userName, isAuthenticated } = toRefs(useUserStore());
+  import { storeToRefs } from "pinia";
+  const { logOut, userName, isAuthenticated } = storeToRefs(useUserStore());
   const router = useRouter();
 </script>
 

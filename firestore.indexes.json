@@ -5,9 +5,17 @@
       "collectionId": "events",
       "queryScope": "COLLECTION",
       "fields": [
-        { "fieldPath": "individual", "order": "ASCENDING" },
-        { "fieldPath": "date", "order": "DESCENDING" },
-        { "fieldPath": "__name__", "order": "DESCENDING" }
+        { "fieldPath": "individual", "order": "ASCENDING", "allowExistingFields": true },
+        { "fieldPath": "date", "order": "DESCENDING", "allowExistingFields": true }
+      ]
+    },
+    {
+      "collectionId": "events",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "date", "order": "DESCENDING", "allowExistingFields": true }
+        { "fieldPath": "individual", "order": "ASCENDING", "allowExistingFields": true },
+        { "fieldPath": "eventType", "order": "ASCENDING", "allowExistingFields": true },
       ]
     }
   ]

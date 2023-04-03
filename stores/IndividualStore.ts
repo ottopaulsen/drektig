@@ -1,6 +1,6 @@
 import { useFirestore } from "vuefire";
 
-import { addDoc, setDoc, collection, doc, getDoc, updateDoc, onSnapshot } from "firebase/firestore";
+import { setDoc, collection, doc, getDoc, updateDoc, onSnapshot } from "firebase/firestore";
 
 import type { Individual } from "@/types/Individual";
 

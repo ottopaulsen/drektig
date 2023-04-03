@@ -77,8 +77,6 @@
 
 <script setup>
   import { Timestamp } from "firebase/firestore";
-  import { useIndividualStore } from "../../../../stores/IndividualStore";
-  import { useEventStore } from "../../../../stores/EventStore";
 
   definePageMeta({
     middleware: ["auth", "route-guard-query-event-type"],

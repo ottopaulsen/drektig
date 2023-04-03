@@ -5,6 +5,5 @@
 </template>
 
 <script setup>
-  import { useEventStore } from "@/stores/EventStore";
   const eventStore = useEventStore();
 </script>

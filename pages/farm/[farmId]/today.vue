@@ -1,10 +1,16 @@
 <template>
   <div>
     <div>
-      <h1>Hendelser {{ eventStore.filterDays }} siste dager</h1>
+      <h3>Hendelser</h3>
     </div>
-    <div v-for="event in eventStore.eventsOfAllIndividuals">
+    <div v-for="event in eventStore.lastEvents">
       <ListEventItem :event="event" :showIndividual="true" />
+    </div>
+    <div>
+      <h3>Estimates:</h3>
+      <p v-for="estimate in estimateStore.estimates">
+        <ListEstimateItem :estimate="estimate" :showIndividual="true" />
+      </p>
     </div>
   </div>
 </template>
@@ -14,5 +20,7 @@
     middleware: ["auth"],
   });
 
+  const individualStore = useIndividualStore();
+  const estimateStore = useEstimateStore();
   const eventStore = useEventStore();
 </script>

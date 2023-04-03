@@ -1,4 +1,7 @@
+import { Timestamp } from "firebase/firestore";
 export default function useTimeUtils() {
+  type PossibleDate = Date | undefined | null;
+
   /**
    * Get a firestore Timestamp that can be used as filter for getting
    * a date days from today.
@@ -22,5 +25,33 @@ export default function useTimeUtils() {
     return day;
   }
 
-  return { daysFromToday };
+  /**
+   * Get a date that ix x days after another date
+   *
+   * @param day The date to calculate from
+   * @param days The number of days to add
+   */
+  function daysAfter(day: PossibleDate, days: number): Date | undefined {
+    if (!day) {
+      return undefined;
+    }
+    const res = new Date(day);
+    res.setDate(res.getDate() + days);
+    return res;
+  }
+
+  /**
+   *   Return true if a and b are dates, and a is later than b, else false
+   *
+   * @param a The date that shall be latest
+   * @param b The data that shall be first
+   */
+  function isAfter(a: PossibleDate, b: PossibleDate): boolean {
+    if (!a || !b) {
+      return false;
+    }
+    return a > b;
+  }
+
+  return { daysAfter, daysFromToday, isAfter };
 }

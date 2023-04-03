@@ -23,8 +23,9 @@
 </template>
 
 <script setup>
-  const { logOut, userName } = toRefs(useUserStore());
-  const { farmCount, farmId, farmName, farms } = toRefs(useFarmStore());
+  import { storeToRefs } from "pinia";
+  const { logOut, userName } = storeToRefs(useUserStore());
+  const { farmCount, farmId, farmName, farms } = storeToRefs(useFarmStore());
 
   const route = useRoute();
   const router = useRouter();
