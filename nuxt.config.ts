@@ -10,6 +10,7 @@ export default defineNuxtConfig({
   css: [
     "~/assets/text.css",
     "~/assets/buttons.css",
+    "~/assets/lists.css",
     "primevue/resources/themes/saga-blue/theme.css",
     "primevue/resources/primevue.css",
     "primeicons/primeicons.css",

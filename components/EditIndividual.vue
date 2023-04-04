@@ -45,6 +45,9 @@
   }
 
   onMounted(() => {
+    if (!route.params.individualId) {
+      return;
+    }
     getIndividualSnapshot(route.params.individualId).then((ind) => {
       Object.assign(individual, ind.data());
       individual.id = ind.id;

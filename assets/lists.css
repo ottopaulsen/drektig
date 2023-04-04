@@ -1,0 +1,27 @@
+span {
+    margin: 0px 10px 0px 6px;
+  }
+  .list-container {
+    width: 100%;
+  }
+
+  .list-box {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: large;
+    margin: 8px 0px 0px 0px;
+    padding: 8px 8px 8px 8px;
+    background-color: rgba(249, 248, 231, 0.474);
+    border-width: 1px;
+    border-radius: 5px;
+    border-color: brown;
+    border-style: solid;
+
+    color: black;
+  }
+
+  .list-box > span {
+    padding: 8px;
+  }
