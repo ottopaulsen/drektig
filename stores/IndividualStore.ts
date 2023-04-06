@@ -2,7 +2,7 @@ import { useFirestore } from "vuefire";
 
 import { setDoc, collection, doc, getDoc, updateDoc, onSnapshot } from "firebase/firestore";
 
-import type { Individual } from "@/types/Individual";
+import type { Individual, IndividualNew } from "@/types/Individual";
 
 export const useIndividualStore = defineStore("IndividualStore", () => {
   const db = useFirestore();
@@ -52,8 +52,10 @@ export const useIndividualStore = defineStore("IndividualStore", () => {
   );
 
   const usedIds = computed(() => individuals.value.map((i) => i.id));
+  const usedNumbers = computed(() => individuals.value.map((i) => i.number));
+  const usedNames = computed(() => individuals.value.map((i) => i.name));
 
-  function addIndividual(individual: Individual) {
+  function addIndividual(individual: IndividualNew) {
     let id = "" + individual.number;
     let counter = 2;
     while (usedIds.value.includes(id)) {
@@ -75,6 +77,14 @@ export const useIndividualStore = defineStore("IndividualStore", () => {
       usedIds.value.includes(id) ? doc(db, "farms", farmStore.farmId, "individuals", id) : null
     );
     return useDocument(ref);
+  }
+
+  function getByNumber(number: number) {
+    return individuals.value.filter((i) => i.number === number);
+  }
+
+  function getByName(name: string) {
+    return individuals.value.filter((i) => i.name === name);
   }
 
   async function getIndividualSnapshot(id: string) {
@@ -105,6 +115,8 @@ export const useIndividualStore = defineStore("IndividualStore", () => {
   );
 
   return {
+    getByNumber,
+    getByName,
     getIndividual,
     getIndividualSnapshot,
     individuals,
@@ -114,6 +126,8 @@ export const useIndividualStore = defineStore("IndividualStore", () => {
     selectedIndividual,
     selectedIndividualIsLegal,
     usedIds,
+    usedNames,
+    usedNumbers,
   };
 });
 

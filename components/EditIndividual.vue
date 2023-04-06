@@ -23,11 +23,11 @@
   const props = defineProps({ id: null });
 
   const isNew = computed(() => !props.id);
+  const id = ref<string | null>(null);
 
-  const individual = reactive<Individual>({
+  const individual = reactive({
     number: null,
     name: null,
-    id: null,
     born: null,
     toBeTakenOut: false,
   });
@@ -40,7 +40,7 @@
       individual.born = null;
       individual.toBeTakenOut = false;
     } else {
-      saveIndividual(individual);
+      saveIndividual({ ...individual, id: id.value as string } as Individual);
     }
   }
 
@@ -50,7 +50,7 @@
     }
     getIndividualSnapshot(route.params.individualId).then((ind) => {
       Object.assign(individual, ind.data());
-      individual.id = ind.id;
+      id.value = ind.id;
     });
   });
 

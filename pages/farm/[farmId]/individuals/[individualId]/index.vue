@@ -24,8 +24,15 @@
       </p>
       <p v-if="individualStore.selectedIndividual?.toBeTakenOut">Skal slaktes!</p>
     </div>
+
+    <h3>Events:</h3>
     <div v-for="event in eventStore.eventsOfSelectedIndividual">
-      <ListEventItem :event="event" />
+      <ListEventItem :showIndividual="false" :event="event" />
+    </div>
+
+    <h3>Estimates:</h3>
+    <div v-for="estimate in estimates">
+      <ListEstimateItem :estimate="estimate" :showIndividual="false" />
     </div>
   </div>
 </template>
@@ -36,6 +43,7 @@
   const individualStore = useIndividualStore();
 
   const eventStore = useEventStore();
+  const estimateStore = useEstimateStore();
 
   definePageMeta({
     middleware: ["auth"],
@@ -55,6 +63,11 @@
       ? DateTime.now().diff(bornDate.value, ["years", "months"])
       : undefined
   );
+  const estimates = computed(() => {
+    const indEst = estimateStore.individualEstimates[individualStore.selectedIndividual?.id];
+    const keys = Object.keys(indEst);
+    return keys.map((key) => ({ estimateType: key, date: indEst[key] }));
+  });
 
   useHead({
     title,

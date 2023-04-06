@@ -7,7 +7,6 @@ type Individual = {
 };
 
 type IndividualNew = {
-  id: string | null;
   number: number | null;
   name: string | null;
   born: Timestamp | null;
