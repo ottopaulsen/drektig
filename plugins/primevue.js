@@ -6,6 +6,8 @@ import InputText from "primevue/inputtext";
 import InputNumber from "primevue/inputnumber";
 import Tooltip from "primevue/tooltip";
 import Checkbox from "primevue/checkbox";
+import TabView from "primevue/tabview";
+import TabPanel from "primevue/tabpanel";
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(PrimeVue, { ripple: false });
@@ -15,6 +17,8 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.component("Checkbox", Checkbox);
   nuxtApp.vueApp.component("InputNumber", InputNumber);
   nuxtApp.vueApp.component("InputText", InputText);
+  nuxtApp.vueApp.component("TabPanel", TabPanel);
+  nuxtApp.vueApp.component("TabView", TabView);
   // Directives
   nuxtApp.vueApp.directive("tooltip", Tooltip);
 });

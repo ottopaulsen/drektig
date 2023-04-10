@@ -1,90 +1,16 @@
 <template>
-  <div>
-    <h1>Ny hendelse</h1>
-    <div v-if="!eventStore.selectedEventType">
-      <SelectEventType />
-    </div>
-    <div v-if="eventStore.selectedEventType">
-      <div>
-        <div>
-          <span>Hendelse: {{ eventStore.selectedEventType?.label }}</span>
-          <span>
-            <NuxtLink :to="{ query: { ...route.query, eventType: null } }">
-              <Icon name="mdi:pencil-box-outline" size="2em" />
-            </NuxtLink>
-          </span>
-        </div>
-      </div>
-      <div v-if="individualStore.selectedIndividual">
-        <span
-          >Individ:
-          {{
-            individualStore.selectedIndividual?.number +
-            " " +
-            individualStore.selectedIndividual?.name
-          }}</span
-        >
-        <span>
-          <NuxtLink :to="{ query: { ...route.query, individual: null } }">
-            <Icon name="mdi:pencil-box-outline" size="2em" />
-          </NuxtLink>
-        </span>
-      </div>
-      <h3 v-if="eventStore.selectedEventType && individualStore.selectedIndividual">
-        Registrer hendelse:
-        {{
-          "" +
-          eventStore.selectedEventType?.label +
-          (individualStore.selectedIndividualIsLegal
-            ? " på " +
-              individualStore.selectedIndividual?.number +
-              " " +
-              individualStore.selectedIndividual?.name
-            : "")
-        }}
-      </h3>
-      <div v-if="!individualStore.selectedIndividual">
-        <p>Velg individ:</p>
-        <SelectIndividual />
-        <br />
-        <p>
-          Her skal bare de som er aktuelt å registrere hendelsen på komme opp, og de skal komme i
-          den mest sannsynlige rekkefølgen
-        </p>
-      </div>
-      <div v-if="individualStore.selectedIndividual && eventStore.selectedEventType">
-        <EditInputDate label="Dato" id="event-date" v-model="date" />
-        <Button label="Lagre" icon="pi pi-check" @click="save" />
-      </div>
-    </div>
-    <div v-if="eventStore.selectedEventType && individualStore.selectedIndividual">
-      <h3>Tidligere hendelser:</h3>
-      <div>
-        <ListEvents />
-      </div>
-    </div>
-  </div>
+  <TabView>
+    <TabPanel header="Ny hendelse">
+      <NewEvent />
+    </TabPanel>
+    <TabPanel header="Importer hendelser">
+      <ImportEvents />
+    </TabPanel>
+  </TabView>
 </template>
 
 <script setup>
-  import { Timestamp } from "firebase/firestore";
-
   definePageMeta({
     middleware: ["auth", "route-guard-query-event-type", "route-guard-query-individual"],
   });
-
-  const route = useRoute();
-  const eventStore = useEventStore();
-  const individualStore = useIndividualStore();
-
-  const date = ref(Timestamp.now());
-
-  async function save() {
-    const event = {
-      eventType: eventStore.selectedEventType.eventType,
-      individual: individualStore.selectedIndividual.id,
-      date: date.value,
-    };
-    eventStore.addEvent(event);
-  }
 </script>

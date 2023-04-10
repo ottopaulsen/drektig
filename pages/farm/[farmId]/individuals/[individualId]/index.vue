@@ -13,7 +13,7 @@
       </div>
     </div>
     <div>
-      <p>Født: {{ bornDate.toISODate() }}</p>
+      <p>Født: {{ bornDate?.toISODate() }}</p>
       <p v-if="age">
         Alder:
         {{
@@ -56,12 +56,12 @@
       individualStore.selectedIndividual?.number + " " + individualStore.selectedIndividual?.name
   );
   const bornDate = computed(() =>
-    DateTime.fromJSDate(individualStore.selectedIndividual?.born?.toDate())
+    individualStore.selectedIndividual?.born.toDate
+      ? DateTime.fromJSDate(individualStore.selectedIndividual?.born?.toDate())
+      : undefined
   );
   const age = computed(() =>
-    individualStore.selectedIndividual?.born
-      ? DateTime.now().diff(bornDate.value, ["years", "months"])
-      : undefined
+    bornDate.value ? DateTime.now().diff(bornDate.value, ["years", "months"]) : undefined
   );
   const estimates = computed(() => {
     if (!individualStore.selectedIndividual) {

@@ -12,9 +12,6 @@
 </template>
 
 <script setup lang="ts">
-  import TabView from "primevue/tabview";
-  import TabPanel from "primevue/tabpanel";
-
   definePageMeta({
     middleware: ["auth"],
   });

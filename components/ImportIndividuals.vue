@@ -13,11 +13,7 @@
     <DataTable :value="tableData">
       <Column field="line" header="Linje" v-tooltip="messages"></Column>
       <Column field="number" header="Nummer"></Column>
-      <Column header="Navn">
-        <template #body="slotProps">
-          <span v-tooltip.top="'Hallo der'">{{ slotProps.data.name }}</span>
-        </template>
-      </Column>
+      <Column field="name" header="Navn"></Column>
       <Column field="born" header="Født"></Column>
       <Column header="Skal slaktes">
         <template #body="slotProps">
