@@ -68,6 +68,7 @@ export const useIndividualStore = defineStore("IndividualStore", () => {
 
   function saveIndividual(individual: Individual) {
     //@ts-ignore
+    console.log("saveIndividual with data: ", individual);
     const ref = doc(db, "farms", farmStore.farmId, "individuals", individual.id);
     updateDoc(ref, individual);
   }
@@ -93,26 +94,15 @@ export const useIndividualStore = defineStore("IndividualStore", () => {
   }
 
   // Selected individual
+  const selectedIndividual = computed(() => {
+    const individualQuery =
+      typeof route.query.individual === "string" ? route.query.individual : null;
+    const individualParam = route.params.individualId;
+    const individualId = "" + (individualParam || individualQuery);
 
-  const selectedIndividual = ref<Individual | null>(null);
-  const selectedIndividualIsLegal = ref<Boolean>(false);
-
-  watch(
-    route,
-    async () => {
-      await loadIndividuals();
-      const individualQuery =
-        typeof route.query.individual === "string" ? route.query.individual : null;
-      const individualParam = route.params.individualId;
-      const individualId = "" + (individualParam || individualQuery);
-
-      selectedIndividualIsLegal.value = usedIds.value.includes(individualId);
-      selectedIndividual.value = selectedIndividualIsLegal.value
-        ? individuals.value.find((i) => i.id === individualId) ?? null
-        : null;
-    },
-    { immediate: true }
-  );
+    return individuals.value.find((i) => i.id === individualId) ?? null;
+  });
+  const selectedIndividualIsLegal = computed(() => selectedIndividual.value !== null);
 
   return {
     getByNumber,

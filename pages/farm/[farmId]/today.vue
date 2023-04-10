@@ -7,7 +7,7 @@
       <ListEventItem :event="event" :showIndividual="true" />
     </div>
     <div>
-      <h3>Estimates:</h3>
+      <h3>Ventede hendelser:</h3>
       <p v-for="estimate in estimateStore.estimates">
         <ListEstimateItem :estimate="estimate" :showIndividual="true" />
       </p>

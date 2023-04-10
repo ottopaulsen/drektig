@@ -9,7 +9,7 @@
     <NuxtLink v-if="!isAuthenticated" to="login">
       <button class="button-front">Logg inn</button>
     </NuxtLink>
-    <NuxtLink v-for="farm in farms" :to="`/farm/${farm.id}`">
+    <NuxtLink v-for="farm in farmStore.farms" :to="`/farm/${farm.id}`">
       <button class="button-front">{{ farm.name }}</button>
     </NuxtLink>
   </div>
@@ -20,7 +20,7 @@
   definePageMeta({ layout: "infopage" });
 
   const { isAuthenticated } = storeToRefs(useUserStore());
-  const { farms } = storeToRefs(useFarmStore());
+  const farmStore = useFarmStore();
 </script>
 
 <style scoped>

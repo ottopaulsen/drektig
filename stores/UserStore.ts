@@ -9,11 +9,7 @@ export const useUserStore = defineStore("UserStore", () => {
   const email = computed(() => user.value?.email);
   const userName = computed(() => user.value?.displayName);
   const isAuthenticated = computed(() => {
-    console.log("isUserLoaded.value = " + isUserLoaded.value);
-    console.log("user.value = ", user.value);
-    console.log("user.value.email = ", user.value?.email);
     const res = isUserLoaded.value && !!user.value?.email;
-    console.log("isAuthenticated returns " + res);
     return res;
   });
 
@@ -29,7 +25,6 @@ export const useUserStore = defineStore("UserStore", () => {
   async function logOut(router: Router) {
     if (auth) {
       await auth.signOut().then(() => {
-        console.log("userStore.logOut push /");
         router.push("/");
       });
     }

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <EditIndividual :id="$route.params.id" />
+    <EditIndividual :id="$route.params.individualId" />
   </div>
 </template>
 

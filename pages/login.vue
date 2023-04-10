@@ -8,8 +8,6 @@
 <script setup lang="ts">
   import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 
-  console.log("login setup");
-
   definePageMeta({
     layout: "noheader",
   });
@@ -22,7 +20,6 @@
   const signIn = () => {
     if (auth) {
       signInWithPopup(auth, new GoogleAuthProvider()).then(() => {
-        console.log({ route, router });
         router.push(route.query.redirect ?? "/");
       });
     }

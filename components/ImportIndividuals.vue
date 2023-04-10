@@ -62,7 +62,6 @@
       if (isNaN(number) || number < 0) {
         res.push(`Linje ${row.line}: Nummer (${row.number}) må være et positivt heltall`);
       } else if (individualStore.usedNumbers.includes(number)) {
-        console.log({ row, number });
         res.push(
           `Linje ${row.line}: Nummer ${number} er allerede brukt på ${
             individualStore.getByNumber(number)[0].name
@@ -99,3 +98,9 @@
     router.push(route.path.replace("/new", ""));
   }
 </script>
+
+<style scoped>
+  textarea {
+    width: 100%;
+  }
+</style>

@@ -1,17 +1,10 @@
 <template>
   <div class="row">
     <div class="col">
-      <label :for="props.id ?? props.label">{{ props.label }}: </label>
+      <label :for="id">{{ props.label }}: </label>
     </div>
     <div class="col">
-      <input
-        :id="props.id && props.label"
-        type="checkbox"
-        :value="modelValue"
-        :checked="modelValue === true"
-        v-model="checked"
-        @input="update"
-      />
+      <Checkbox v-model="checked" :binary="true" @input="update" />
     </div>
   </div>
 </template>
@@ -25,9 +18,18 @@
 
   const checked = ref(props.modelValue === true);
   const emit = defineEmits(["update:modelValue"]);
+  const id = computed(() => props.id && props.label);
 
-  function update(event) {
-    emit("update:modelValue", event.target.checked);
+  watch(
+    () => props.modelValue,
+    () => {
+      checked.value = props.modelValue === true;
+    },
+    { immediate: true }
+  );
+
+  function update(value) {
+    emit("update:modelValue", value);
   }
 </script>
 

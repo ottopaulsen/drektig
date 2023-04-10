@@ -25,12 +25,12 @@
       <p v-if="individualStore.selectedIndividual?.toBeTakenOut">Skal slaktes!</p>
     </div>
 
-    <h3>Events:</h3>
+    <h3>Hendelser:</h3>
     <div v-for="event in eventStore.eventsOfSelectedIndividual">
       <ListEventItem :showIndividual="false" :event="event" />
     </div>
 
-    <h3>Estimates:</h3>
+    <h3>Ventede hendelser:</h3>
     <div v-for="estimate in estimates">
       <ListEstimateItem :estimate="estimate" :showIndividual="false" />
     </div>
@@ -64,6 +64,9 @@
       : undefined
   );
   const estimates = computed(() => {
+    if (!individualStore.selectedIndividual) {
+      return [];
+    }
     const indEst = estimateStore.individualEstimates[individualStore.selectedIndividual?.id];
     const keys = Object.keys(indEst);
     return keys.map((key) => ({ estimateType: key, date: indEst[key] }));

@@ -23,7 +23,6 @@
     userStore.init();
 
     watch(user, (user, prevUser) => {
-      console.log("watch user changed to ", user);
       if (prevUser && !user) {
         // user logged out
         router.push("/login");

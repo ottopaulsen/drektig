@@ -6,6 +6,7 @@
     background-color: rgba(18, 108, 226, 0.474);
     border-radius: 10px;
     border-width: 1px;
+    cursor: pointer;
   }
 
 .action-button {
@@ -23,4 +24,8 @@
   display: flex;
   justify-content: space-around;
   width: 100%;
+}
+
+.pointer {
+  cursor: pointer;
 }

@@ -26,7 +26,7 @@ export default function useTimeUtils() {
   }
 
   /**
-   * Get a date that ix x days after another date
+   * Get a date that is x days after another date
    *
    * @param day The date to calculate from
    * @param days The number of days to add

@@ -28,17 +28,8 @@ export const useEventStore = defineStore("EventStore", () => {
 
   const eventNames = computed(() => eventTypes.map((t) => t.eventType as string));
 
-  const selectedEventType = ref<EventType | null>(null);
-
-  watch(
-    () => route.query.eventType,
-    (eventType) => {
-      selectedEventType.value =
-        eventType && typeof eventType === "string"
-          ? eventTypes.find((t) => t.eventType === eventType) ?? null
-          : null;
-    },
-    { immediate: true }
+  const selectedEventType = computed(
+    (route) => eventTypes.find((t) => t.eventType === useRoute().query.eventType) ?? null
   );
 
   function addEvent(event: IndividualEvent) {

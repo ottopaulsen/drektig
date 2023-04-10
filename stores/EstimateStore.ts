@@ -33,8 +33,6 @@ export const useEstimateStore = defineStore("EstimateStore", () => {
         });
       })
     );
-    console.log("This is estimates computed in EstimatesStore");
-    console.log(res);
     return res.sort((a, b) => a.date.valueOf() - b.date.valueOf());
   });
 
@@ -42,7 +40,6 @@ export const useEstimateStore = defineStore("EstimateStore", () => {
 });
 
 function calculateEstimates(individual: Individual, events: IndividualEvents): IndividualEstimates {
-  console.log("calculateEstimates", events);
   const res = {} as IndividualEstimates;
   estimateTypes.forEach((type) => {
     const est = type.estimate(individual, events);

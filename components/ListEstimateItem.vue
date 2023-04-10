@@ -6,6 +6,16 @@
         <span v-if="props.showIndividual">{{ individualText }}</span>
         <span>{{ label }}</span>
       </div>
+      <div class="pointer">
+        <NuxtLink
+          :to="{
+            path: '/farm/katthult/events/new',
+            query: { eventType: estimate.estimateType, individual: estimate.individual },
+          }"
+        >
+          <Icon name="mdi:checkbox-marked-circle-plus-outline" size="1.6em" />
+        </NuxtLink>
+      </div>
     </div>
   </div>
 </template>
@@ -13,6 +23,8 @@
 <script lang="ts" setup>
   import { DateTime } from "luxon";
   import type { IndividualEstimate } from "~~/types/IndividualEstimate";
+  import { SelectEventType, SelectIndividual } from "../.nuxt/components";
+  import { useIndividualStore } from "../stores/IndividualStore";
 
   const estimateStore = useEstimateStore();
   const individualStore = useIndividualStore();
@@ -32,4 +44,9 @@
   );
 
   const date = computed(() => DateTime.fromJSDate(props.estimate.date).toISODate());
+
+  function newEvent() {
+    console.log("TODO: Create the event");
+    router.push;
+  }
 </script>

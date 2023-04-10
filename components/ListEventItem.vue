@@ -6,7 +6,7 @@
         <span v-if="props.showIndividual">{{ individualText }}</span>
         <span>{{ label }}</span>
       </div>
-      <div>
+      <div class="pointer">
         <Icon name="mdi:delete" size="1.6em" @click="handleDelete" />
       </div>
     </div>
@@ -19,7 +19,7 @@
   const eventStore = useEventStore();
   const individualStore = useIndividualStore();
 
-  const props = defineProps<{ event: IndividualEvent; showIndividual: Boolean }>();
+  const props = defineProps<{ event: IndividualEvent; showIndividual?: Boolean }>();
   const individual = computed(() =>
     individualStore.individuals.find((i) => i.id === props.event.individual)
   );

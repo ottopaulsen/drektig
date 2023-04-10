@@ -46,7 +46,6 @@
   const farmStore = useFarmStore();
 
   const user = useCurrentUser();
-  console.log({ user: user.value });
   const authenticated = computed(() => {
     return user.value;
   });
@@ -57,10 +56,8 @@
   // we don't need this watcher on server
   onMounted(() => {
     watch(user, (user, prevUser) => {
-      console.log("watch user", user, prevUser);
       if (!user) {
         // user logged out
-        console.log("router push login");
         router.push("/login");
       } else if (user && typeof route.query.redirect === "string") {
         // user logged in
@@ -75,15 +72,6 @@
     console.log("onErrorCaptured instance: ", instance);
     console.log("onErrorCaptured end");
   });
-
-  const auth = useFirebaseAuth();
-  if (auth) {
-    auth.onAuthStateChanged(() => {
-      console.log("Auth state changed: ", auth);
-    });
-  } else {
-    console.log("Auth is null");
-  }
 
   useHead({
     title: "Drektig",

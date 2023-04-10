@@ -68,13 +68,14 @@ export const useFarmStore = defineStore("FarmStore", () => {
   watch(
     () => route.params.farmId,
     () => {
-      console.log("route.params.farm = " + route.params.farmId);
       if (typeof route.params.farmId === "string") {
         farmId.value = route.params.farmId;
       }
     },
     { immediate: true }
   );
+
+  loadFarms();
 
   return {
     accessibleFarms,
